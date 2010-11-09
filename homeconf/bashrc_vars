@@ -17,6 +17,3 @@ alias music="sudo -H -u music firefox"
 alias pushd="pushd $(pwd)"
 
 #export http_proxy=http://proxy:8080
-
-source /etc/bash_completion
-

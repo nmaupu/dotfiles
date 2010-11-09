@@ -1,0 +1,22 @@
+export PATH=/opt/ant/bin:/opt/firefox/:/opt/bin:/sbin:$PATH:/opt/scripts
+
+##  Variables d'environnements
+# JDK
+export JAVA_HOME=/opt/jdk
+export GRAILS_HOME=/opt/grails
+export PATH=$PATH:$JAVA_HOME/bin:$GRAILS_HOME/bin
+
+export PATH=/usr/local/firefox:$PATH:~/programs/bin:~/programs/wtp/:/opt/eclipse:/usr/share/php/data/symfony/bin:/opt/Adobe/Reader8/bin
+alias rd="rdesktop"
+# Change ls color directory from blue to bold yellow
+export LS_COLORS='di=01;33'
+alias ls="ls --color"
+alias ll="ls -l"
+alias la="ls -al"
+alias music="sudo -H -u music firefox"
+alias pushd="pushd $(pwd)"
+
+#export http_proxy=http://proxy:8080
+
+source /etc/bash_completion
+

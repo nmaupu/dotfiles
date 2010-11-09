@@ -1,0 +1,4 @@
+#define separator_width 3
+#define separator_height 7
+static unsigned char separator_bits[] = {
+   0x00, 0x00, 0x00, 0x00, 0x07, 0x07, 0x07 };

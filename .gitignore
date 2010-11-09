@@ -1,0 +1,6 @@
+*.swp
+homeconf/xmonad/xmonad-x86_64-linux
+homeconf/xmonad/xmonad.errors
+homeconf/xmonad/xmonad.hi
+homeconf/xmonad/xmonad.o
+

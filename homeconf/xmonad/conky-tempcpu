@@ -1,0 +1,13 @@
+background no
+
+total_run_times 0
+# number of cpu samples to average
+# set to 1 to disable averaging
+cpu_avg_samples 2
+# number of net samples to average
+# set to 1 to disable averaging
+net_avg_samples 2
+out_to_console yes
+
+TEXT
+50°C

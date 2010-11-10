@@ -85,11 +85,26 @@ myNumlockMask   = mod2Mask
 --myWorkspaces    = ["1:Prod","2:BLR","3:Misc","4:Test","5:Web","6:Com","7","8","9","10","11","12"]
 myWorkspaces    = [" α ", " β " ," γ ", " δ ", " ε ", " ζ ", " η ", " θ ", " ι "] 
 
+-- Some vars
+myFont = "-xos4-terminus-bold-r-normal-*-12-*-*-*-c-*-iso8859-1"
+myIconDir = "~/.xmonad/icons"
+myDzenFGColor = "#555555"
+myDzenBGColor = ""
+myNormalFGColor = "#ffffff"
+myNormalBGColor = "#0f0f0f"
+myFocusedFGColor = "#0099ff"
+myFocusedBGColor = "#0f0f0f"
+myUrgentFGColor = "#0099ff"
+myUrgentBGColor = "#0077ff"
+myIconFGColor = "#777777"
+myIconBGColor = ""
+mySeperatorColor = "#555555"
  
 -- Border colors for unfocused and focused windows, respectively.
 --
 myNormalBorderColor  = "#dddddd"
-myFocusedBorderColor = "#0099ff"
+myFocusedBorderColor = "#AA0033"
+dmenuCommand = "dmenu_path | dmenu -p '>' -l 10 -nf '" ++ myNormalFGColor  ++ "' -nb '" ++ myNormalBGColor ++ "' -fn '"++ myFont  ++"' -sb '"++ myFocusedFGColor ++"' -sf '"++ myNormalFGColor  ++"'"
  
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -102,7 +117,7 @@ myKeyBindings conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     -- launch a terminal
     , ((modMask, xK_Return), spawn $ XMonad.terminal conf)
     -- launch dmenu
-    , ((modMask,  xK_p), spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
+    , ((modMask,  xK_p), spawn dmenuCommand)
     -- close focused window 
     , ((modMask .|. shiftMask, xK_c     ), kill)
     -- Rotate through the available layout algorithms
@@ -306,19 +321,6 @@ myLogHook = setWMName "LG3D" >> dynamicLogXinerama >> updatePointer (Relative 0.
 -- See above 
 myStartupHook = setWMName "LG3D"
 
-myFont = "-xos4-terminus-bold-r-normal-*-12-*-*-*-c-*-iso8859-1"
-myIconDir = "~/.xmonad/icons"
-myDzenFGColor = "#555555"
-myDzenBGColor = ""
-myNormalFGColor = "#ffffff"
-myNormalBGColor = "#0f0f0f"
-myFocusedFGColor = "#0099ff"
-myFocusedBGColor = "#0f0f0f"
-myUrgentFGColor = "#0099ff"
-myUrgentBGColor = "#0077ff"
-myIconFGColor = "#777777"
-myIconBGColor = ""
-mySeperatorColor = "#555555"
 
 myStatusBar = "dzen2 -m -x '0' -y '0' -h '20' -w '1920' -ta 'l' -fg '" ++ myNormalFGColor ++ "' -bg '" ++ myNormalBGColor ++ "' -fn '" ++ myFont  ++ "'"
 myDzenRight = "~/.xmonad/scripts/loop.sh | dzen2 -fn \"" ++ myFont  ++ "\" -x 1600 -y 0 -h 20 -w 320 -ta r -bg \"" ++ myNormalBGColor  ++ "\" -fg \"" ++ myNormalFGColor  ++ "\" -p -e ''"

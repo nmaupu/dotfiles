@@ -1,1 +1,3 @@
-urxvt & exec xmonad
+xrdb -merge ~/.Xresources &
+xscreensaver -no-splash &
+exec xmonad

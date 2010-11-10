@@ -98,7 +98,7 @@ source ~/.bashrc_vars
 export NNTPSERVER=news.free.fr
 
 bash=$BASH_VERSION%.* ; bmajor=$bash%.* ; bminor=$bash#*.
-if [ "$PS1" ] && [ "$bmajor" = "2" ] && [ $bminor ’>’ 04 ] && [ -f /etc/bash_completion ]
+if [ -f /etc/bash_completion ]
 then
   . /etc/bash_completion
 fi

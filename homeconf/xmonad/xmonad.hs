@@ -35,7 +35,6 @@ import XMonad.Util.Run
 import qualified XMonad.Actions.FlexibleManipulate as Flex
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
- 
 
 
 -- The preferred terminal program, which is used in a binding below and by
@@ -87,7 +86,8 @@ myWorkspaces    = [" α ", " β " ," γ ", " δ ", " ε ", " ζ ", " η ", " θ 
 
 -- Some vars
 myFont = "-xos4-terminus-bold-r-normal-*-12-*-*-*-c-*-iso8859-1"
-myIconDir = "~/.xmonad/icons"
+--myHome = spawn "ls -d ~"
+myIconDir = ".xmonad/icons"
 myDzenFGColor = "#555555"
 myDzenBGColor = ""
 myNormalFGColor = "#ffffff"
@@ -145,17 +145,11 @@ myKeyBindings conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask .|. shiftMask .|. controlMask, xK_space), sendMessage resetAlt)
     -- Push window back into tiling
     , ((modMask, xK_t     ), withFocused $ windows . W.sink)
-    -- Increment the number of windows in the master area
---    , ((modMask .|. shiftMask , xK_o ), sendMessage (IncMasterN 1))
-    -- Deincrement the number of windows in the master area
---    , ((modMask .|. shiftMask , xK_p), sendMessage (IncMasterN (-1)))
-    -- Gnome's Print screen functionality seems borked when using xmonad, so
+    -- Gnome's Print screen functionality seems broken when using xmonad, so
     -- we need this
     , ((modMask ,              xK_Print ), spawn "exe=`gnome-screenshot` && eval \"exec $exe\"")
     -- Restart xmonad
-    --, ((modMask .|. shiftMask , xK_q), spawn "exe=`pkill dzen2 && pkill conky` && eval \"exec $exe\" $ "restart "xmonad" True)
-    --, ((modMask .|. shiftMask , xK_q), spawn "exe=`pkill dzen2; pkill conky` && eval \"exec $exe\"" >> restart "xmonad" True)
-    , ((modMask .|. shiftMask , xK_q), restart "xmonad" True)
+    , ((modMask .|. shiftMask , xK_q), mapM_ spawn ["pgrep -f loop.sh | xargs kill -9", "xmonad --restart"])
 
     -- Switch workspaces (and move windows) horizontally
     , ((modMask .|. controlMask , xK_Left  ), prevWS )
@@ -187,6 +181,12 @@ myKeyBindings conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
         | (key, sc) <- zip [xK_z, xK_e, xK_r] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
     ]
+    ++
+    [((m .|. modMask, k), windows $ f i)
+        | (i, k) <- zip (workspaces conf) numAzerty,
+          (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
+
+numAzerty = [0x26,0xe9,0x22,0x27,0x28,0x2d,0xe8,0x5f,0xe7,0xe0]
  
  
 ------------------------------------------------------------------------
@@ -334,7 +334,7 @@ myDzenPP h = defaultPP
     , ppHidden = wrap ("") "^fg()^bg()^p()" . \wsId -> if (':' `elem` wsId) then drop 2 wsId else wsId -- don't use ^fg() here!!
     , ppHiddenNoWindows = wrap ("^fg(" ++ myDzenFGColor ++ ")^bg()^p()") "^fg()^bg()^p()" . \wsId -> if (':' `elem` wsId) then drop 2 wsId else wsId
     , ppUrgent = wrap ("^fg(" ++ myUrgentFGColor ++ ")^bg()^p()") "^fg()^bg()^p()" . \wsId -> if (':' `elem` wsId) then drop 2 wsId else wsId
-    , ppSep = " ^i(" ++ myIconDir  ++ "/separator.xbm) "
+    , ppSep = " ^i(" ++ myIconDir  ++ "/separator.xbm)"
     , ppWsSep = " "
     , ppTitle = dzenColor ("" ++ myNormalFGColor ++ "") "" . wrap "< " " >"
     , ppLayout = dzenColor ("" ++ myNormalFGColor ++ "") "" .

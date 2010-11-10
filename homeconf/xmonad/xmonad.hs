@@ -82,12 +82,25 @@ myNumlockMask   = mod2Mask
 -- of this list.
 --
 --myWorkspaces    = ["1:Prod","2:BLR","3:Misc","4:Test","5:Web","6:Com","7","8","9","10","11","12"]
-myWorkspaces    = [" α ", " β " ," γ ", " δ ", " ε ", " ζ ", " η ", " θ ", " ι "] 
+--myWorkspaces    = [" α ", " β " ," γ ", " δ ", " ε ", " ζ ", " η ", " θ ", " ι "] 
+myB1  = " 1 "
+myB2  = " 2 "
+myB3  = " 3 "
+myB4  = " 4 "
+myB5  = " 5 "
+myB6  = " 6 "
+myB7  = " 7 "
+myB8  = " 8 "
+myB9  = " 9 "
+myB10 = " 10 "
+myB11 = " 11 "
+myB12 = " 12 "
+
+myWorkspaces = [ myB1, myB2, myB3, myB4, myB5, myB6, myB7, myB8, myB9, myB10, myB11, myB12 ]
 
 -- Some vars
 myFont = "-xos4-terminus-bold-r-normal-*-12-*-*-*-c-*-iso8859-1"
---myHome = spawn "ls -d ~"
-myIconDir = ".xmonad/icons"
+myIconDir =  ".xmonad/icons"
 myDzenFGColor = "#555555"
 myDzenBGColor = ""
 myNormalFGColor = "#ffffff"
@@ -104,7 +117,7 @@ mySeperatorColor = "#555555"
 --
 myNormalBorderColor  = "#dddddd"
 myFocusedBorderColor = "#AA0033"
-dmenuCommand = "dmenu_path | dmenu -p '>' -l 10 -nf '" ++ myNormalFGColor  ++ "' -nb '" ++ myNormalBGColor ++ "' -fn '"++ myFont  ++"' -sb '"++ myFocusedFGColor ++"' -sf '"++ myNormalFGColor  ++"'"
+dmenuCommand = "prog=`dmenu_path | dmenu -p '>' -l 10 -nf '" ++ myNormalFGColor  ++ "' -nb '" ++ myNormalBGColor ++ "' -fn '"++ myFont  ++"' -sb '"++ myFocusedFGColor ++"' -sf '"++ myNormalFGColor  ++"'` && eval \"exec ${prog}\""
  
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -267,15 +280,16 @@ myManageHook = composeAll
     , className =? "Extension"        --> doFloat
     , className =? "Qalculate-gtk"    --> doFloat
     , title     =? "VLC media player" --> doFloat
-    --, className =? "Terminator"       --> doF (W.shift "terms" )
-    --, className =? "Skype"            --> doF (W.shift "skype" )
-    --, className =? "Eclipse"          --> doF (W.shift "eclipse" )
-    --, className =? "Firefox"          --> doF (W.shift "web" )
-    --, className =? "Pidgin"           --> doF (W.shift "pidgin" )
-    --, className =? "GWT"              --> doF (W.shift "gwt" )
-    --, title =?     "Start Here"       --> doF (W.shift "main" )
-    --, title =?     "irssi"            --> doF (W.shift "main" )
-    --, className =? "Twhirl"           --> doF (W.shift "main" )
+  --, className =? "Terminator"       --> doF (W.shift "terms" )
+  --, className =? "Skype"            --> doF (W.shift "skype" )
+  --, className =? "Eclipse"          --> doF (W.shift "eclipse" )
+    , className =? "Firefox"          --> doF (W.shift myB5 )
+    , className =? "Iceweasel"        --> doF (W.shift myB5 )
+  --, className =? "Pidgin"           --> doF (W.shift "pidgin" )
+  --, className =? "GWT"              --> doF (W.shift "gwt" )
+  --, title =?     "Start Here"       --> doF (W.shift "main" )
+  --, title =?     "irssi"            --> doF (W.shift "main" )
+  --, className =? "Twhirl"           --> doF (W.shift "main" )
     , title =?     "Brood War"        --> doIgnore
     , resource  =? "desktop_window"   --> doIgnore
     , resource  =? "kdeskt6op"        --> doIgnore ]
@@ -322,7 +336,7 @@ myLogHook = setWMName "LG3D" >> dynamicLogXinerama >> updatePointer (Relative 0.
 myStartupHook = setWMName "LG3D"
 
 
-myStatusBar = "dzen2 -m -x '0' -y '0' -h '20' -w '1920' -ta 'l' -fg '" ++ myNormalFGColor ++ "' -bg '" ++ myNormalBGColor ++ "' -fn '" ++ myFont  ++ "'"
+myStatusBar = "dzen2 -m -x '0' -y '0' -h '20' -w '1600' -ta 'l' -fg '" ++ myNormalFGColor ++ "' -bg '" ++ myNormalBGColor ++ "' -fn '" ++ myFont  ++ "'"
 myDzenRight = "~/.xmonad/scripts/loop.sh | dzen2 -fn \"" ++ myFont  ++ "\" -x 1600 -y 0 -h 20 -w 320 -ta r -bg \"" ++ myNormalBGColor  ++ "\" -fg \"" ++ myNormalFGColor  ++ "\" -p -e ''"
 --myStatusBar = "dzen2 -m -x '0' -y '0' -h '20' -w '1680' -ta 'l' -fg '" ++ myNormalFGColor ++ "' -bg '" ++ myNormalBGColor ++ "' -fn '" ++ myFont  ++ "'"
 
@@ -346,6 +360,7 @@ myDzenPP h = defaultPP
         )
     , ppOutput = hPutStrLn h
     }
+  --where myHome = spawn "ls -d ~"
  
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.

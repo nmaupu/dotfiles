@@ -1,10 +1,3 @@
---
--- Tiago Rodrigues xmonad config file for xmonad-darcs derived from these
--- official configuration template
---
--- Some of the original template comments and contents are left as a guide
--- not only for me, but others as well.
---  
 import XMonad
 import XMonad.Layout.MosaicAlt
 import XMonad.Layout.Grid
@@ -45,6 +38,11 @@ myTerminal      = "urxvt"
 -- Width of the window border in pixels.
 --
 myBorderWidth   = 2
+
+-- Special keys
+altKey     = mod1Mask
+winKey     = mod4Mask
+numLockKey = mod2Mask
  
 -- modMask lets you specify which modkey you want to use. The default
 -- is mod1Mask ("left alt").  You may also consider using mod3Mask
@@ -59,7 +57,7 @@ myBorderWidth   = 2
 -- of some RSI i've developed because of too many ctrl+alt shortcuts (and ctrl
 -- and alt were too close on my old laptop keyboard)
 --
-myModMask       = mod4Mask
+-- myModMask       = winKey
  
 -- The mask for the numlock key. Numlock status is "masked" from the
 -- current modifier status, so the keybindings will work with numlock on or
@@ -74,7 +72,7 @@ myModMask       = mod4Mask
 -- Set numlockMask = 0 if you don't have a numlock key, or want to treat
 -- numlock status separately.
 --
-myNumlockMask   = mod2Mask
+myNumlockMask   = numLockKey
  
 -- The default number of workspaces (virtual screens) and their names.
 -- By default we use numeric strings, but any string may be used as a
@@ -83,20 +81,7 @@ myNumlockMask   = mod2Mask
 --
 --myWorkspaces    = ["1:Prod","2:BLR","3:Misc","4:Test","5:Web","6:Com","7","8","9","10","11","12"]
 --myWorkspaces    = [" α ", " β " ," γ ", " δ ", " ε ", " ζ ", " η ", " θ ", " ι "] 
-myB1  = " 1 "
-myB2  = " 2 "
-myB3  = " 3 "
-myB4  = " 4 "
-myB5  = " 5 "
-myB6  = " 6 "
-myB7  = " 7 "
-myB8  = " 8 "
-myB9  = " 9 "
-myB10 = " 10 "
-myB11 = " 11 "
-myB12 = " 12 "
-
-myWorkspaces = [ myB1, myB2, myB3, myB4, myB5, myB6, myB7, myB8, myB9, myB10, myB11, myB12 ]
+myWorkspaces = map (\x -> " " ++ show x ++ " ") [1..12]
 
 -- Some vars
 myFont = "-xos4-terminus-bold-r-normal-*-12-*-*-*-c-*-iso8859-1"
@@ -117,87 +102,70 @@ mySeperatorColor = "#555555"
 --
 myNormalBorderColor  = "#dddddd"
 myFocusedBorderColor = "#AA0033"
-dmenuCommand = "prog=`dmenu_path | dmenu -p '>' -l 10 -nf '" ++ myNormalFGColor  ++ "' -nb '" ++ myNormalBGColor ++ "' -fn '"++ myFont  ++"' -sb '"++ myFocusedFGColor ++"' -sf '"++ myNormalFGColor  ++"'` && eval \"exec ${prog}\""
- 
+dmenuCommandBasic    = "dmenu -p '>' -l 10 -nf '" ++ myNormalFGColor  ++ "' -nb '" ++ myNormalBGColor ++ "' -fn '"++ myFont  ++"' -sb '"++ myFocusedFGColor ++"' -sf '"++ myNormalFGColor  ++"'"
+dmenuCommand         = "prog=`dmenu_path | " ++ dmenuCommandBasic  ++ "` && eval \"exec ${prog}\""
+shellScriptServer    = "/opt/scripts/xmonad-server-connect.sh"
+dmenuServerCommand   = "param=`"++ shellScriptServer  ++" -l | " ++ dmenuCommandBasic  ++ " -b` && eval \""++ shellScriptServer  ++" -e ${param}\""
+
+
+addKeyBinding shortcutLeft shortcutRight action xs = ((shortcutLeft, shortcutRight), action) : xs
+
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
 --
-myKeyBindings conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
-    -- Increment the number of windows in the master area
-    [ ((modMask .|. shiftMask , xK_p ), sendMessage (IncMasterN 1))
-    -- Deincrement the number of windows in the master area
-    , ((modMask .|. shiftMask , xK_o), sendMessage (IncMasterN (-1)))
-    -- launch a terminal
-    , ((modMask, xK_Return), spawn $ XMonad.terminal conf)
-    -- launch dmenu
-    , ((modMask,  xK_p), spawn dmenuCommand)
-    -- close focused window 
-    , ((modMask .|. shiftMask, xK_c     ), kill)
-    -- Rotate through the available layout algorithms
-    , ((modMask, xK_space ), sendMessage NextLayout)
-    -- Resize viewed windows to the correct size
-    , ((modMask .|. shiftMask, xK_n     ), refresh)
-    -- Move focus to the next / previous window
-    , ((modMask, xK_Right), windows W.focusDown)
-    , ((modMask, xK_Left), windows W.focusUp  )
-    -- Swap the focused window and the master window
-    , ((modMask .|. shiftMask, xK_m), windows W.swapMaster)
-    -- Swap the focused window with the next window
-    , ((modMask, xK_m     ), windows W.swapDown  )
-    -- Swap the focused window with the previous window
-    , ((modMask, xK_l     ), windows W.swapUp)
-    -- screensaver
-    , ((mod1Mask .|. controlMask, xK_l     ), spawn "xscreensaver-command -lock")
-    -- Swap the focused window with the previous window
-    -- , ((modMask .|. shiftMask, xK_Return     ), windows W.swapUp    )
-    -- Shrink the master area
-    , ((modMask, xK_Down     ), sendMessage Shrink)
-    -- Expand the master area
-    , ((modMask, xK_Up  ), sendMessage Expand)
-    -- Reset the layout
-    , ((modMask .|. shiftMask .|. controlMask, xK_space), sendMessage resetAlt)
-    -- Push window back into tiling
-    , ((modMask, xK_t     ), withFocused $ windows . W.sink)
-    -- Gnome's Print screen functionality seems broken when using xmonad, so
-    -- we need this
-    , ((modMask ,              xK_Print ), spawn "exe=`gnome-screenshot` && eval \"exec $exe\"")
-    -- Restart xmonad
-    , ((modMask .|. shiftMask , xK_q), mapM_ spawn ["pgrep -f loop.sh | xargs kill -9", "xmonad --restart"])
-
-    -- Switch workspaces (and move windows) horizontally
-    , ((modMask .|. controlMask , xK_Left  ), prevWS )
-    , ((modMask .|. controlMask , xK_Right ), nextWS )
-    , ((modMask .|. shiftMask .|. controlMask, xK_Left  ), shiftToPrev )
-    , ((modMask .|. shiftMask .|. controlMask, xK_Right ), shiftToNext )
-    -- Display a workspace switcher
-    -- , ((modMask , xK_m     ), workspacePrompt defaultXPConfig (windows . W.view))
-
-    -- Send the focused window to the workspace
-    -- , ((modMask .|. shiftMask, xK_m), workspacePrompt defaultXPConfig (windows . W.shift))
-
-    -- Switch screen
-    -- , ((modMask .|. mod1Mask, xK_Right), spawn "exe=togglescreen && eval \"exec $exe\"")
-    -- , ((modMask .|. mod1Mask, xK_Left), spawn "exe=togglescreen && eval \"exec $exe\"")
-
-    ]
-    ++
-    -- Switch workspaces (and move windows) vertically
-    [((keyMask .|. modMask .|. controlMask, keySym), function (Lines 1) Finite direction)
-     | (keySym, direction) <- zip [xK_Left .. xK_Down] $ enumFrom ToLeft
-     , (keyMask, function) <- [(0, planeMove), (controlMask .|. shiftMask, planeShift)]
-    ]
-    ++
-    -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
+newKeyBindings x = M.union (M.fromList . myKeyBindings $ x) (keys defaultConfig x)
+myKeyBindings conf@(XConfig {XMonad.modMask = modMask}) =
+      addKeyBinding cModShift xK_p (sendMessage (IncMasterN 1))   $
+      addKeyBinding cModShift xK_o (sendMessage (IncMasterN (-1))) $
+      -- launch a terminal
+      addKeyBinding modMask xK_Return (spawn $ XMonad.terminal conf) $
+      -- launch dmenu
+      addKeyBinding modMask xK_p (spawn dmenuCommand) $
+      -- launch dmenu for servers
+      addKeyBinding modMask xK_s (spawn dmenuServerCommand) $
+      -- Resize viewed windows to the correct size
+      addKeyBinding cModShift xK_n refresh $
+      -- Move focus to the next / previous window
+      addKeyBinding modMask xK_Right (windows W.focusDown) $
+      addKeyBinding modMask xK_Left  (windows W.focusUp  ) $
+      -- Swap the focused window and the master window
+      addKeyBinding cModShift xK_m (windows W.swapMaster) $
+      -- Swap the focused window with the next window
+      addKeyBinding modMask xK_m (windows W.swapDown) $
+      -- Swap the focused window with the previous window
+      addKeyBinding modMask xK_l (windows W.swapUp) $
+      -- screensaver
+      addKeyBinding cCtrlAlt xK_l (spawn "xscreensaver-command -lock") $
+      -- Shrink the master area
+      addKeyBinding modMask xK_Down (sendMessage Shrink) $
+      -- Expand the master area
+      addKeyBinding modMask xK_Up (sendMessage Expand) $
+      -- Reset the layout
+      addKeyBinding cModCtrlShift xK_space (sendMessage resetAlt) $
+      addKeyBinding modMask xK_Print (spawn "exe=`gnome-screenshot` && eval \"exec $exe\"") $
+      -- Restart xmonad
+      addKeyBinding modMask xK_q (mapM_ spawn ["pgrep -f loop.sh | xargs kill -9", "xmonad --restart"]) $
+      -- Switch workspaces (and move windows) horizontally
+      addKeyBinding cModCtrl      xK_Left  prevWS      $
+      addKeyBinding cModCtrl      xK_Right nextWS      $
+      addKeyBinding cModCtrlShift xK_Left  shiftToPrev $
+      addKeyBinding cModCtrlShift xK_Right shiftToNext $
     -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
-    --
-    [((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
-        | (key, sc) <- zip [xK_z, xK_e, xK_r] [0..]
-        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
-    ]
-    ++
-    [((m .|. modMask, k), windows $ f i)
-        | (i, k) <- zip (workspaces conf) numAzerty,
-          (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
+      ([((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
+          | (key, sc) <- zip [xK_z, xK_e, xK_r] [0..]
+          , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
+       ]
+       ++
+       [((m .|. modMask, k), windows $ f i)
+           | (i, k) <- zip (workspaces conf) numAzerty,
+             (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]])
+      where       
+        cModCtrl      = modMask   .|. controlMask
+        cModShift     = modMask   .|. shiftMask
+        cCtrlShift    = shiftMask .|. controlMask
+        cCtrlAlt      = altKey    .|. controlMask
+        cModCtrlShift = cModCtrl  .|. shiftMask
+
 
 numAzerty = [0x26,0xe9,0x22,0x27,0x28,0x2d,0xe8,0x5f,0xe7,0xe0]
  
@@ -283,8 +251,8 @@ myManageHook = composeAll
   --, className =? "Terminator"       --> doF (W.shift "terms" )
   --, className =? "Skype"            --> doF (W.shift "skype" )
   --, className =? "Eclipse"          --> doF (W.shift "eclipse" )
-    , className =? "Firefox"          --> doF (W.shift myB5 )
-    , className =? "Iceweasel"        --> doF (W.shift myB5 )
+    , className =? "Firefox"          --> doF (W.shift $ myWorkspaces!!5 )
+    , className =? "Iceweasel"        --> doF (W.shift $ myWorkspaces!!5 )
   --, className =? "Pidgin"           --> doF (W.shift "pidgin" )
   --, className =? "GWT"              --> doF (W.shift "gwt" )
   --, title =?     "Start Here"       --> doF (W.shift "main" )
@@ -348,7 +316,7 @@ myDzenPP h = defaultPP
     , ppHidden = wrap ("") "^fg()^bg()^p()" . \wsId -> if (':' `elem` wsId) then drop 2 wsId else wsId -- don't use ^fg() here!!
     , ppHiddenNoWindows = wrap ("^fg(" ++ myDzenFGColor ++ ")^bg()^p()") "^fg()^bg()^p()" . \wsId -> if (':' `elem` wsId) then drop 2 wsId else wsId
     , ppUrgent = wrap ("^fg(" ++ myUrgentFGColor ++ ")^bg()^p()") "^fg()^bg()^p()" . \wsId -> if (':' `elem` wsId) then drop 2 wsId else wsId
-    , ppSep = " ^i(" ++ myIconDir  ++ "/separator.xbm)"
+    , ppSep = " ^i(" ++ myIconDir  ++ "/separator.xbm) "
     , ppWsSep = " "
     , ppTitle = dzenColor ("" ++ myNormalFGColor ++ "") "" . wrap "< " " >"
     , ppLayout = dzenColor ("" ++ myNormalFGColor ++ "") "" .
@@ -360,13 +328,9 @@ myDzenPP h = defaultPP
         )
     , ppOutput = hPutStrLn h
     }
-  --where myHome = spawn "ls -d ~"
  
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
- 
--- Run xmonad with the settings you specify. No need to modify this.
---
 main = do
         dzen <- spawnPipe myStatusBar
         dzenRight <- spawnPipe myDzenRight
@@ -374,12 +338,12 @@ main = do
          { terminal           = myTerminal,
            focusFollowsMouse  = myFocusFollowsMouse,
            borderWidth        = myBorderWidth,
-           modMask            = myModMask,
+           modMask            = winKey,
            numlockMask        = myNumlockMask,
            workspaces         = myWorkspaces,
            normalBorderColor  = myNormalBorderColor,
            focusedBorderColor = myFocusedBorderColor,
-           keys               = myKeyBindings,
+           keys               = newKeyBindings,
            mouseBindings      = myMouseBindings,
            layoutHook         = myLayout,
            manageHook         = myManageHook,

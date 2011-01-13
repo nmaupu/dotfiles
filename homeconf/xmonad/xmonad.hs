@@ -19,6 +19,7 @@ import System.Exit
 import XMonad.Prompt
 import XMonad.Prompt.Workspace
 import XMonad.Layout.ToggleLayouts
+import XMonad.Hooks.UrgencyHook
 
 -- Dzen2
 import XMonad.Hooks.DynamicLog
@@ -93,7 +94,7 @@ myNormalFGColor = "#ffffff"
 myNormalBGColor = "#0f0f0f"
 myFocusedFGColor = "#0099ff"
 myFocusedBGColor = "#0f0f0f"
-myUrgentFGColor = "#0099ff"
+myUrgentFGColor = "#ff0000"
 myUrgentBGColor = "#0077ff"
 myIconFGColor = "#777777"
 myIconBGColor = ""
@@ -143,6 +144,8 @@ myKeyBindings conf@(XConfig {XMonad.modMask = modMask}) =
       addKeyBinding modMask xK_Up (sendMessage Expand) $
       -- set window fullscreen
       addKeyBinding modMask xK_f (sendMessage ToggleLayout) $
+      -- focus urgent window
+      addKeyBinding modMask xK_u focusUrgent $
       -- Reset the layout
       addKeyBinding cModCtrlShift xK_space (sendMessage resetAlt) $
       addKeyBinding modMask xK_Print (spawn "exe=`gnome-screenshot` && eval \"exec $exe\"") $
@@ -151,6 +154,8 @@ myKeyBindings conf@(XConfig {XMonad.modMask = modMask}) =
       -- Switch workspaces (and move windows) horizontally
       addKeyBinding cModCtrl      xK_Left  prevWS      $
       addKeyBinding cModCtrl      xK_Right nextWS      $
+      addKeyBinding cModCtrl      xK_Up    toggleWS    $
+      addKeyBinding cModCtrl      xK_Down  toggleWS    $
       addKeyBinding cModCtrlShift xK_Left  shiftToPrev $
       addKeyBinding cModCtrlShift xK_Right shiftToNext $
     -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
@@ -338,7 +343,7 @@ myDzenPP h = defaultPP
 main = do
         dzen <- spawnPipe myStatusBar
         dzenRight <- spawnPipe myDzenRight
-        xmonad $ defaultConfig
+        xmonad $ withUrgencyHook NoUrgencyHook $ defaultConfig
          { terminal           = myTerminal,
            focusFollowsMouse  = myFocusFollowsMouse,
            borderWidth        = myBorderWidth,

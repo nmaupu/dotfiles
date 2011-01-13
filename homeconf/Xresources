@@ -8,6 +8,7 @@ Rxvt*scrollBar: false
 Rxvt*reverseWrap: true
 Rxvt*fullCursor: true
 Rxvt*saveLines: 15000
+Rxvt*intensityStyles: True
 Rxvt.perl-ext-common: default,matcher
 Rxvt*urlLauncher: firefox
 Rxvt*cursorBlink: false
@@ -18,4 +19,6 @@ Rxvt*scrollstyle: plain
 Rxvt*scrollTtyOutput: true
 Rxvt*scrollWithBuffer: true
 Rxvt*scrollBar_right: true
+Rxvt*lineSpace: 1
 Rxvt.scrollTtyKeypress: true
+Rxvt.buffered: true

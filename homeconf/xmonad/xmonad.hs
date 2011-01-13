@@ -18,6 +18,7 @@ import XMonad.Actions.Plane
 import System.Exit
 import XMonad.Prompt
 import XMonad.Prompt.Workspace
+import XMonad.Layout.ToggleLayouts
 
 -- Dzen2
 import XMonad.Hooks.DynamicLog
@@ -135,11 +136,13 @@ myKeyBindings conf@(XConfig {XMonad.modMask = modMask}) =
       -- Swap the focused window with the previous window
       addKeyBinding modMask xK_l (windows W.swapUp) $
       -- screensaver
-      addKeyBinding cCtrlAlt xK_l (spawn "xscreensaver-command -lock") $
+      addKeyBinding cCtrlAlt xK_l (mapM_ spawn ["xscreensaver -no-splash", "xscreensaver-command -lock"]) $
       -- Shrink the master area
       addKeyBinding modMask xK_Down (sendMessage Shrink) $
       -- Expand the master area
       addKeyBinding modMask xK_Up (sendMessage Expand) $
+      -- set window fullscreen
+      addKeyBinding modMask xK_f (sendMessage ToggleLayout) $
       -- Reset the layout
       addKeyBinding cModCtrlShift xK_space (sendMessage resetAlt) $
       addKeyBinding modMask xK_Print (spawn "exe=`gnome-screenshot` && eval \"exec $exe\"") $
@@ -201,18 +204,19 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 --
 --mosaic = MosaicAlt M.empty
 full = noBorders Full
+layouts = avoidStruts(tiled ||| Mirror tiled ||| StackTile 1 (3/100) (1/2) ||| full) ||| full
+  where
+    -- default tiling algorithm partitions the screen into two panes
+    tiled   = Tall nmaster delta ratio
+    -- The default number of windows in the master pane
+    nmaster = 1
+    -- Default proportion of screen occupied by master pane
+    ratio   = 6/10
+    -- Percent of screen to increment by when resizing panes
+    delta   = 3/100
 
 --myLayout = ewmhDesktopsLayout $ (avoidStruts(tiled ||| Mirror tiled ||| StackTile 1 (3/100) (1/2) ||| full) ||| full)
-myLayout = avoidStruts(tiled ||| Mirror tiled ||| StackTile 1 (3/100) (1/2) ||| full) ||| full
-  where
- -- default tiling algorithm partitions the screen into two panes
-     tiled   = Tall nmaster delta ratio
- -- The default number of windows in the master pane
-     nmaster = 1
- -- Default proportion of screen occupied by master pane
-     ratio   = 6/10
- -- Percent of screen to increment by when resizing panes
-     delta   = 3/100
+myLayout = (toggleLayouts $ avoidStruts full) $ layouts
 
 
 --myLayout = ewmhDesktopsLayout

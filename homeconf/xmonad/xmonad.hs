@@ -23,7 +23,7 @@ import XMonad.Util.WorkspaceCompare (getSortByTag)
 addKeyBinding shortcutLeft shortcutRight action xs = ((shortcutLeft, shortcutRight), action) : xs
 
 takeWorkspaces :: Int -> [String] -> [String]
-takeWorkspaces x ws = take x ws
+takeWorkspaces = take
 
 addWS' :: l -> W.StackSet [Char] l a sid sd -> W.StackSet [Char] l a sid sd
 addWS' l s@(W.StackSet { W.hidden = ws }) = s { W.hidden = W.Workspace (show $ length (W.workspaces s) + 1) l Nothing:ws }
@@ -108,8 +108,8 @@ keyBindings conf@(XConfig {XMonad.modMask = modMask}) =
   addKeyBinding cModCtrl      xK_Right nextWS      $
   addKeyBinding cModCtrl      xK_Up    toggleWS    $
   addKeyBinding cModCtrl      xK_Down  toggleWS    $
-  addKeyBinding cModCtrlShift xK_Left  shiftToPrev $
-  addKeyBinding cModCtrlShift xK_Right shiftToNext $
+  addKeyBinding cModCtrlShift xK_Left  (shiftToPrev >> prevWS) $
+  addKeyBinding cModCtrlShift xK_Right (shiftToNext >> nextWS) $
   -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
   ([((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
       | (key, sc) <- zip [xK_z, xK_e, xK_r] [0..]

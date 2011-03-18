@@ -22,3 +22,4 @@ Rxvt*scrollBar_right: true
 Rxvt*lineSpace: 1
 Rxvt.scrollTtyKeypress: true
 Rxvt.buffered: true
+Rxvt.urgentOnBell: true

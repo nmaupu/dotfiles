@@ -42,7 +42,7 @@ numLockKey      = mod2Mask
 myTerminal      = "urxvt"
 myBorderWidth   = 2
 workspacesPool  = map show [1..]
-myWorkspaces    = takeWorkspaces 10 workspacesPool
+myWorkspaces    = takeWorkspaces 15 workspacesPool
 dzenFont        = "-xos4-terminus-bold-r-normal-*-12-*-*-*-c-*-iso8859-1"
 iconDir         = ".xmonad/icons"
 iconSep         = iconDir ++ "/separator.xbm"
@@ -125,7 +125,7 @@ keyBindings conf@(XConfig {XMonad.modMask = modMask}) =
     cCtrlShift    = shiftMask .|. controlMask
     cCtrlAlt      = altKey    .|. controlMask
     cModCtrlShift = cModCtrl  .|. shiftMask
-    numAzerty       = [0x26,0xe9,0x22,0x27,0x28,0x2d,0xe8,0x5f,0xe7,0xe0]
+    numAzerty       = [0x26,0xe9,0x22,0x27,0x28,0x2d,0xe8,0x5f,0xe7,0xe0] ++ [xK_F1..xK_F12]
 
  
 ------------------------------------------------------------------------
@@ -145,7 +145,7 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 -- Layouts:
 --
 full = noBorders Full
-layouts = avoidStruts(tiled ||| Mirror tiled ||| Grid ||| full) ||| full
+layouts = avoidStruts(Mirror tiled ||| tiled ||| Grid ||| full) ||| full
   where
     -- default tiling algorithm partitions the screen into two panes
     tiled   = Tall nmaster delta ratio

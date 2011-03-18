@@ -15,5 +15,6 @@ alias ll="ls -l"
 alias la="ls -al"
 alias music="sudo -H -u music firefox"
 alias pushd="pushd $(pwd)"
+alias kf="pgrep -f firefox | xargs kill -9"
 
 #export http_proxy=http://proxy:8080

@@ -1,6 +1,7 @@
 import qualified XMonad.Actions.FlexibleManipulate as Flex
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
+import System.IO (hPutStrLn)
 import XMonad
 import XMonad.Actions.CycleWS
 import XMonad.Actions.DynamicWorkspaces
@@ -68,7 +69,7 @@ newKeyBindings x = M.union (M.fromList . keyBindings $ x) (keys defaultConfig x)
 keyBindings conf@(XConfig {XMonad.modMask = modMask}) =
   addKeyBinding modMask xK_g addWS $
   addKeyBinding modMask xK_v removeWorkspace $
-  addKeyBinding modMask xK_b (selectWorkspace greenXPConfig)  $
+  --addKeyBinding modMask xK_b (selectWorkspace greenXPConfig)  $
   addKeyBinding cModShift xK_p (sendMessage (IncMasterN 1))   $
   addKeyBinding cModShift xK_o (sendMessage (IncMasterN (-1))) $
   -- launch a terminal

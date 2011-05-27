@@ -102,8 +102,8 @@ keyBindings conf@(XConfig {XMonad.modMask = modMask}) =
   -- Reset the layout
   addKeyBinding cModCtrlShift xK_space (sendMessage resetAlt) $
   addKeyBinding modMask xK_Print (spawn "exe=`gnome-screenshot` && eval \"exec $exe\"") $
-  -- Restart xmonad
-  addKeyBinding modMask xK_q (mapM_ spawn ["pgrep -f loop.sh | xargs kill -9", "xmonad --restart"]) $
+  -- Restart xmonad, does not work with old version
+  --addKeyBinding modMask xK_q (mapM_ spawn ["pgrep -f loop.sh | xargs kill -9", "xmonad --recompile"]) $
   -- Switch workspaces (and move windows) horizontally
   addKeyBinding cModCtrl      xK_Left  prevWS      $
   addKeyBinding cModCtrl      xK_Right nextWS      $
@@ -146,7 +146,8 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 -- Layouts:
 --
 full = noBorders Full
-layouts = avoidStruts(Mirror tiled ||| tiled ||| Grid ||| full) ||| full
+--layouts = avoidStruts(Mirror tiled ||| tiled ||| Grid ||| full) ||| full
+layouts = avoidStruts(Mirror tiled ||| tiled ||| Grid ||| full)
   where
     -- default tiling algorithm partitions the screen into two panes
     tiled   = Tall nmaster delta ratio

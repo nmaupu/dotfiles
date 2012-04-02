@@ -170,8 +170,8 @@ myManageHook = composeAll
     , className =? "Do"               --> doIgnore
     , className =? "Tilda"            --> doFloat
     , title     =? "VLC media player" --> doFloat
-    , className =? "Firefox"          --> doF (W.shift $ myWorkspaces!!5 )
-    , className =? "Iceweasel"        --> doF (W.shift $ myWorkspaces!!5 )
+    , className =? "Firefox"          --> doF (W.shift $ myWorkspaces!!0 )
+    , className =? "Iceweasel"        --> doF (W.shift $ myWorkspaces!!0 )
     ]
         <+> manageDocks
  

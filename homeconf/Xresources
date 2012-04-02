@@ -7,7 +7,7 @@ Rxvt*reverseVideo: false
 Rxvt*scrollBar: false
 Rxvt*reverseWrap: true
 Rxvt*fullCursor: true
-Rxvt*saveLines: 15000
+Rxvt*saveLines: 50000
 Rxvt*intensityStyles: True
 Rxvt.perl-ext-common: default,matcher
 Rxvt*urlLauncher: firefox

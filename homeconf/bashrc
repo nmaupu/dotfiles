@@ -108,7 +108,7 @@ echo
 PATH=/usr/games:${PATH}
 
 ### Display a funny cowsay
-#COWSAY_DIR=/usr/share/cowsay/cows
+COWSAY_DIR=/usr/share/cowsay/cows
 #COWSAY_FILES="satanic.cow dragon-and-cow.cow moose.cow bud-frogs.cow daemon.cow tux.cow calvin.cow gnu.cow duck.cow milk.cow"
 ##COWSAY_FILES="sodomized.cow sodomized-sheep.cow head-in.cow"
 #COWNB=$(echo ${COWSAY_FILES} | tr -s " " "\n" | wc -l)

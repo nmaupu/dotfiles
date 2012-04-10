@@ -44,7 +44,7 @@ myTerminal      = "urxvt"
 myBorderWidth   = 2
 workspacesPool  = map show [1..]
 myWorkspaces    = takeWorkspaces 15 workspacesPool
-dzenFont        = "-xos4-terminus-bold-r-normal-*-12-*-*-*-c-*-iso8859-1"
+dzenFont        = "-adobe-*-bold-r-normal-*-12-*-*-*-*-*-iso8859-1"
 iconDir         = ".xmonad/icons"
 iconSep         = iconDir ++ "/separator.xbm"
 colBG           = "#0f0f0f"
@@ -183,7 +183,7 @@ myLogHook = setWMName "LG3D" >> dynamicLogXinerama >> updatePointer (Relative 0.
 
 myStartupHook = setWMName "LG3D"
 myStatusBar   = "dzen2 -m -x 0 -y 0 -h 20 -w 1600 -ta l -fg '" ++ colNormal ++ "' -bg '" ++ colBG ++ "' -fn '" ++ dzenFont  ++ "'"
-myDzenRight   = "~/.xmonad/scripts/loop.sh | dzen2 -fn '" ++ dzenFont  ++ "' -x 1600 -y 0 -h 20 -w 320 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
+myDzenRight   = "/home/nmaupu/.xmonad/scripts/loop.sh | dzen2 -fn '" ++ dzenFont  ++ "' -x 1600 -y 0 -h 20 -w 320 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
 
 -- dynamicLog pretty printer for dzen:
 myDzenPP h = defaultPP
@@ -208,7 +208,7 @@ main = do
       focusFollowsMouse  = True,
       borderWidth        = myBorderWidth,
       modMask            = winKey,
-      numlockMask        = numLockKey,
+      --numlockMask        = numLockKey,
       workspaces         = myWorkspaces,
       normalBorderColor  = colBorderNormal,
       focusedBorderColor = colBorderFocus,

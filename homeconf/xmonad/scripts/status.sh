@@ -55,14 +55,14 @@ function print_status
     DATE_CPT=0
   fi
 
-  if [ $CPU_CPT -ge $CPU_INTERVAL ]
-  then
-    TEMP=$(sensors | grep Core | tr -s " " | awk '{print $3}' | tr -d "+")
-    TEMP_1=$(echo -e "$TEMP" | head -1)
-    TEMP_2=$(echo -e "$TEMP" | tail -1)
-    PCPU="$(cputemp ${TEMP_1})/$(cputemp ${TEMP_2})"
-    CPU_CPT=0
-  fi
+  ##if [ $CPU_CPT -ge $CPU_INTERVAL ]
+  ##then
+  ##  TEMP=$(sensors | grep temp | tr -s " " | awk '{print $2}' | tr -d "+")
+  ##  TEMP_1=$(echo -e "$TEMP" | head -1)
+  ##  TEMP_2=$(echo -e "$TEMP" | tail -1)
+  ##  PCPU="$(cputemp ${TEMP_1})/$(cputemp ${TEMP_2})"
+  ##  CPU_CPT=0
+  ##fi
 
   #echo "^fg($GREEN)${PCPU} ^fg($NORMAL) ^p(3)^r(3x3)^p(3) $PDATE"
   echo "${PCPU}$NORMAL ^i(${ICON_DIR}/separator.xbm) $PDATE"

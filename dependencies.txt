@@ -1,0 +1,16 @@
+Debian packages :
+
+xmonad
+libghc-xmonad-contrib-dev
+libghc-xmonad-contrib-doc
+libghc-xmonad-contrib-prof
+rxvt
+rxvt-unicode
+dmenu
+dzen2
+lm-sensors
+xfonts-terminus
+terminus
+console-terminus
+
+Use xfontsel to construct a font compatible for dzen in xmonad.hs config

@@ -1,3 +1,6 @@
+./.screenlayout/dualscreen.sh &
 xrdb -merge ~/.Xresources &
 xscreensaver -no-splash &
+ssh-agent &
+skype &
 exec xmonad

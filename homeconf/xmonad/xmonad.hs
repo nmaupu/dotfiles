@@ -17,6 +17,9 @@ import XMonad.Layout.ToggleLayouts
 import XMonad.Prompt
 import XMonad.Util.Run
 import XMonad.Util.WorkspaceCompare (getSortByTag)
+--import XMonad.Layout.SimpleDecoration
+import XMonad.Layout.Tabbed
+
 
 ------------------------------------------------------------------------
 -- Func
@@ -44,7 +47,7 @@ myTerminal      = "urxvt"
 myBorderWidth   = 2
 workspacesPool  = map show [1..]
 myWorkspaces    = takeWorkspaces 15 workspacesPool
-dzenFont        = "-adobe-*-bold-r-normal-*-12-*-*-*-*-*-iso8859-1"
+dzenFont        = "-xos4-terminus-bold-r-normal-*-12-*-*-*-*-*-iso8859-15"
 iconDir         = ".xmonad/icons"
 iconSep         = iconDir ++ "/separator.xbm"
 colBG           = "#0f0f0f"
@@ -58,6 +61,7 @@ colBorderFocus  = "#AA0033"
 dmenuCommandBasic    = "dmenu -p '>' -l 10 -nf '" ++ colNormal  ++ "' -nb '" ++ colBG ++ "' -fn '"++ dzenFont  ++"' -sb '"++ colFocus ++"' -sf '"++ colNormal  ++"'"
 dmenuCommand         = "prog=`dmenu_path | " ++ dmenuCommandBasic  ++ "` && eval \"exec ${prog}\""
 shellScriptServer    = "/opt/scripts/xmonad-server-connect.sh"
+lxappearance         = "lxappearance"
 dmenuServerCommand   = "param=`"++ shellScriptServer  ++" -l | " ++ dmenuCommandBasic  ++ " -b` && eval \""++ shellScriptServer  ++" -e ${param}\""
 
 
@@ -76,6 +80,7 @@ keyBindings conf@(XConfig {XMonad.modMask = modMask}) =
   addKeyBinding modMask xK_Return (spawn $ XMonad.terminal conf) $
   -- launch dmenu
   addKeyBinding modMask xK_p (spawn dmenuCommand) $
+  addKeyBinding cModCtrl xK_p (spawn lxappearance) $
   -- launch dmenu for servers
   addKeyBinding modMask xK_s (spawn dmenuServerCommand) $
   -- Resize viewed windows to the correct size
@@ -146,7 +151,7 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 -- Layouts:
 --
 full = noBorders Full
---layouts = avoidStruts(Mirror tiled ||| tiled ||| Grid ||| full) ||| full
+winDecoTabbed = tabbed shrinkText defaultTheme
 layouts = avoidStruts(Mirror tiled ||| tiled ||| Grid ||| full)
   where
     -- default tiling algorithm partitions the screen into two panes
@@ -157,7 +162,7 @@ layouts = avoidStruts(Mirror tiled ||| tiled ||| Grid ||| full)
     ratio   = 6/10
     -- Percent of screen to increment by when resizing panes
     delta   = 3/100
-myLayout = (toggleLayouts $ avoidStruts full) $ layouts
+myLayout = (toggleLayouts $ avoidStruts winDecoTabbed) $ layouts
 
 
 ------------------------------------------------------------------------
@@ -170,8 +175,9 @@ myManageHook = composeAll
     , className =? "Do"               --> doIgnore
     , className =? "Tilda"            --> doFloat
     , title     =? "VLC media player" --> doFloat
-    , className =? "Firefox"          --> doF (W.shift $ myWorkspaces!!0 )
-    , className =? "Iceweasel"        --> doF (W.shift $ myWorkspaces!!0 )
+    --, className =? "Firefox"        --> doF (W.shift $ myWorkspaces!!0 )
+    --, className =? "Firefox"        --> doF (W.shift $ myWorkspaces!!0 )
+    , className =? "Skype"            --> doF (W.shift $ myWorkspaces!!13 )
     ]
         <+> manageDocks
  
@@ -182,8 +188,8 @@ myLogHook :: X()
 myLogHook = setWMName "LG3D" >> dynamicLogXinerama >> updatePointer (Relative 0.5 0.5)
 
 myStartupHook = setWMName "LG3D"
-myStatusBar   = "dzen2 -m -x 0 -y 0 -h 20 -w 1600 -ta l -fg '" ++ colNormal ++ "' -bg '" ++ colBG ++ "' -fn '" ++ dzenFont  ++ "'"
-myDzenRight   = "/home/nmaupu/.xmonad/scripts/loop.sh | dzen2 -fn '" ++ dzenFont  ++ "' -x 1600 -y 0 -h 20 -w 320 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
+myStatusBar   = "dzen2 -m -x 0 -y 0 -h 20 -w 900 -ta l -fg '" ++ colNormal ++ "' -bg '" ++ colBG ++ "' -fn '" ++ dzenFont  ++ "'"
+myDzenRight   = "/home/nmaupu/.xmonad/scripts/loop.sh | dzen2 -fn '" ++ dzenFont  ++ "' -x 900 -y 0 -h 20 -w 466 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
 
 -- dynamicLog pretty printer for dzen:
 myDzenPP h = defaultPP
@@ -196,6 +202,7 @@ myDzenPP h = defaultPP
   , ppSep             = " ^i(" ++ iconSep  ++ ") "
   , ppOutput          = hPutStrLn h
   }
+
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.

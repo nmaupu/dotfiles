@@ -88,6 +88,7 @@ alias l='ls -CF'
 #fi
 
 source ~/.bashrc_vars
+[ -e ~/.bashrc_vars_private ] && source ~/.bashrc_vars_private
 
 #RET=`ssh-add -l`
 #if [ "${RET}" = "The agent has no identities." ]

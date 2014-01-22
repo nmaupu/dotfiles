@@ -19,6 +19,7 @@ import XMonad.Util.Run
 import XMonad.Util.WorkspaceCompare (getSortByTag)
 --import XMonad.Layout.SimpleDecoration
 import XMonad.Layout.Tabbed
+import XMonad.Hooks.ICCCMFocus
 
 
 ------------------------------------------------------------------------
@@ -60,7 +61,7 @@ colBorderFocus  = "#AA0033"
 
 dmenuCommandBasic    = "dmenu -p '>' -l 10 -nf '" ++ colNormal  ++ "' -nb '" ++ colBG ++ "' -fn '"++ dzenFont  ++"' -sb '"++ colFocus ++"' -sf '"++ colNormal  ++"'"
 dmenuCommand         = "prog=`dmenu_path | " ++ dmenuCommandBasic  ++ "` && eval \"exec ${prog}\""
-shellScriptServer    = "/opt/scripts/xmonad-server-connect.sh"
+shellScriptServer    = "~/scripts/xmonad-server-connect.sh"
 lxappearance         = "lxappearance"
 dmenuServerCommand   = "param=`"++ shellScriptServer  ++" -l | " ++ dmenuCommandBasic  ++ " -b` && eval \""++ shellScriptServer  ++" -e ${param}\""
 
@@ -183,13 +184,15 @@ myManageHook = composeAll
  
 ------------------------------------------------------------------------
 -- Status bars and logging
---
+-- takeTopFocus is useful for java app focus
+-- https://gist.github.com/markhibberd/636125/raw/11713d338e98a9dd5d126308218067a1628480df/xmonad-focus-wire.hs
+-- http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Hooks-ICCCMFocus.html
 myLogHook :: X()
-myLogHook = setWMName "LG3D" >> dynamicLogXinerama >> updatePointer (Relative 0.5 0.5)
+myLogHook = takeTopFocus >> setWMName "LG3D" >> dynamicLogXinerama >> updatePointer (Relative 0.5 0.5)
 
 myStartupHook = setWMName "LG3D"
-myStatusBar   = "dzen2 -m -x 0 -y 0 -h 20 -w 900 -ta l -fg '" ++ colNormal ++ "' -bg '" ++ colBG ++ "' -fn '" ++ dzenFont  ++ "'"
-myDzenRight   = "/home/nmaupu/.xmonad/scripts/loop.sh | dzen2 -fn '" ++ dzenFont  ++ "' -x 900 -y 0 -h 20 -w 466 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
+myStatusBar   = "dzen2 -m -x 0 -y 0 -h 20 -w 1130 -ta l -fg '" ++ colNormal ++ "' -bg '" ++ colBG ++ "' -fn '" ++ dzenFont  ++ "'"
+myDzenRight   = "/home/nmaupu/.xmonad/scripts/loop.sh | dzen2 -fn '" ++ dzenFont  ++ "' -x 1130 -y 0 -h 20 -w 466 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
 
 -- dynamicLog pretty printer for dzen:
 myDzenPP h = defaultPP
@@ -210,7 +213,7 @@ myDzenPP h = defaultPP
 main = do
   dzen      <- spawnPipe myStatusBar
   dzenRight <- spawnPipe myDzenRight
-  xmonad $ withUrgencyHook NoUrgencyHook $ defaultConfig
+  xmonad $ withUrgencyHook dzenUrgencyHook { args = ["-bg", "darkgreen", "-xs", "1"] } $ defaultConfig
     { terminal           = myTerminal,
       focusFollowsMouse  = True,
       borderWidth        = myBorderWidth,

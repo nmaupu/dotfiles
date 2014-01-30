@@ -25,3 +25,7 @@ alias jc="rdesktop -kfr -u nmaupu 192.168.10.131 -z -p - -a 32 -x l -P -g 1880x1
 export GTK_IM_MODULE=ibus
 export XMODIFIERS=@im=ibus
 export QT_IM_MODULE=ibus
+
+# Wine
+export WINEPREFIX="/home/nmaupu/.local/share/wineprefixes/visio"
+export WINEARCH="win32"

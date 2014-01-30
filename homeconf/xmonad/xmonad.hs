@@ -59,11 +59,13 @@ colNormal       = "#ffffff"
 colBorderNormal = "#dddddd"
 colBorderFocus  = "#AA0033"
 
-dmenuCommandBasic    = "dmenu_run -p '>' -l 10 -nf '" ++ colNormal  ++ "' -nb '" ++ colBG ++ "' -fn '"++ dzenFont  ++"' -sb '"++ colFocus ++"' -sf '"++ colNormal  ++"'"
-dmenuCommand         = "prog=`" ++ dmenuCommandBasic  ++ "` && eval \"exec ${prog}\""
-shellScriptServer    = "~/scripts/xmonad-server-connect.sh"
-lxappearance         = "lxappearance"
-dmenuServerCommand   = "param=`"++ shellScriptServer  ++" -l | " ++ dmenuCommandBasic  ++ " -b` && eval \""++ shellScriptServer  ++" -e ${param}\""
+shellScriptServer = "~/scripts/xmonad-server-connect.sh"
+dmenuCommandOpts  = "-p '>' -l 10 -nf '" ++ colNormal  ++ "' -nb '" ++ colBG ++ "' -fn '"++ dzenFont  ++"' -sb '"++ colFocus ++"' -sf '"++ colNormal  ++"'"
+dmenuCommandProg  = "dmenu_run " ++ dmenuCommandOpts
+dmenuCommandServ  = "dmenu " ++ dmenuCommandOpts
+dmenuProg         = "prog=`" ++ dmenuCommandProg  ++ "` && eval \"exec ${prog}\""
+dmenuServ         = "param=`"++ shellScriptServer  ++" -l | " ++ dmenuCommandServ  ++ " -b` && eval \""++ shellScriptServer  ++" -e ${param}\""
+lxappearance      = "lxappearance"
 
 
 ------------------------------------------------------------------------
@@ -80,10 +82,10 @@ keyBindings conf@(XConfig {XMonad.modMask = modMask}) =
   -- launch a terminal
   addKeyBinding modMask xK_Return (spawn $ XMonad.terminal conf) $
   -- launch dmenu
-  addKeyBinding modMask xK_p (spawn dmenuCommand) $
+  addKeyBinding modMask xK_p (spawn dmenuProg) $
   addKeyBinding cModCtrl xK_p (spawn lxappearance) $
   -- launch dmenu for servers
-  addKeyBinding modMask xK_s (spawn dmenuServerCommand) $
+  addKeyBinding modMask xK_s (spawn dmenuServ) $
   -- Resize viewed windows to the correct size
   addKeyBinding cModShift xK_n refresh $
   -- Move focus to the next / previous window
@@ -153,16 +155,16 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 --
 full = noBorders Full
 winDecoTabbed = tabbed shrinkText defaultTheme
-layouts = avoidStruts(Mirror tiled ||| tiled ||| Grid ||| full)
+layouts = avoidStruts(Grid ||| tiled ||| Mirror tiled ||| full)
   where
     -- default tiling algorithm partitions the screen into two panes
     tiled   = Tall nmaster delta ratio
     -- The default number of windows in the master pane
     nmaster = 1
     -- Default proportion of screen occupied by master pane
-    ratio   = 6/10
+    ratio   = 1/10
     -- Percent of screen to increment by when resizing panes
-    delta   = 3/100
+    delta   = 10/100
 myLayout = (toggleLayouts $ avoidStruts winDecoTabbed) $ layouts
 
 

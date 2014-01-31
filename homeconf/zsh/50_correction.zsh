@@ -1,5 +1,5 @@
 # Try to correct the spelling of all arguments in a line.
-setopt correct_all
+#setopt correct_all
 
 alias man='nocorrect man'
 alias mv='nocorrect mv'

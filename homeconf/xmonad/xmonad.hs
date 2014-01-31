@@ -48,7 +48,7 @@ myTerminal      = "urxvt"
 myBorderWidth   = 2
 workspacesPool  = map show [1..]
 myWorkspaces    = takeWorkspaces 15 workspacesPool
-dzenFont        = "-xos4-terminus-bold-r-normal-*-12-*-*-*-*-*-iso8859-15"
+dzenFont        = "-xos4-terminus-bold-r-normal-*-14-*-*-*-*-*-iso8859-15"
 iconDir         = ".xmonad/icons"
 iconSep         = iconDir ++ "/separator.xbm"
 colBG           = "#0f0f0f"
@@ -193,8 +193,8 @@ myLogHook :: X()
 myLogHook = takeTopFocus >> setWMName "LG3D" >> dynamicLogXinerama >> updatePointer (Relative 0.5 0.5)
 
 myStartupHook = setWMName "LG3D"
-myStatusBar   = "dzen2 -m -x 0 -y 0 -h 20 -w 1130 -ta l -fg '" ++ colNormal ++ "' -bg '" ++ colBG ++ "' -fn '" ++ dzenFont  ++ "'"
-myDzenRight   = "/home/nmaupu/.xmonad/scripts/loop.sh | dzen2 -fn '" ++ dzenFont  ++ "' -x 1130 -y 0 -h 20 -w 466 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
+myStatusBar   = "dzen2 -m -x 0 -y 0 -h 20 -w 1450 -ta l -fg '" ++ colNormal ++ "' -bg '" ++ colBG ++ "' -fn '" ++ dzenFont  ++ "'"
+myDzenRight   = "/home/nmaupu/.xmonad/scripts/loop.sh | dzen2 -fn '" ++ dzenFont  ++ "' -x 1450 -y 0 -h 20 -w 466 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
 
 -- dynamicLog pretty printer for dzen:
 myDzenPP h = defaultPP

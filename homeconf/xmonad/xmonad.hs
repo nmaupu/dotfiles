@@ -7,28 +7,28 @@ import XMonad.Actions.CycleWS
 import XMonad.Actions.DynamicWorkspaces
 import XMonad.Actions.UpdatePointer
 import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.ICCCMFocus
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.UrgencyHook
 import XMonad.Layout.Grid
+import XMonad.Layout.IM
 import XMonad.Layout.MosaicAlt
+import XMonad.Layout.Named
 import XMonad.Layout.NoBorders
+import XMonad.Layout.PerWorkspace
+import XMonad.Layout.Tabbed
 import XMonad.Layout.ToggleLayouts
 import XMonad.Prompt
 import XMonad.Util.Run
 import XMonad.Util.WorkspaceCompare (getSortByTag)
---import XMonad.Layout.SimpleDecoration
-import XMonad.Layout.Tabbed
-import XMonad.Hooks.ICCCMFocus
+import Data.Ratio
 
 
 ------------------------------------------------------------------------
 -- Func
 --
 addKeyBinding shortcutLeft shortcutRight action xs = ((shortcutLeft, shortcutRight), action) : xs
-
-takeWorkspaces :: Int -> [String] -> [String]
-takeWorkspaces = take
 
 addWS' :: l -> W.StackSet [Char] l a sid sd -> W.StackSet [Char] l a sid sd
 addWS' l s@(W.StackSet { W.hidden = ws }) = s { W.hidden = W.Workspace (show $ length (W.workspaces s) + 1) l Nothing:ws }
@@ -46,8 +46,7 @@ winKey          = mod4Mask
 numLockKey      = mod2Mask
 myTerminal      = "urxvt"
 myBorderWidth   = 2
-workspacesPool  = map show [1..]
-myWorkspaces    = takeWorkspaces 15 workspacesPool
+myWorkspaces    = take 15 $ map show [1..]
 dzenFont        = "-xos4-terminus-bold-r-normal-*-14-*-*-*-*-*-iso8859-15"
 iconDir         = ".xmonad/icons"
 iconSep         = iconDir ++ "/separator.xbm"
@@ -60,12 +59,16 @@ colBorderNormal = "#dddddd"
 colBorderFocus  = "#AA0033"
 
 shellScriptServer = "~/scripts/xmonad-server-connect.sh"
+shellScriptBrightness = "~/scripts/brightness.sh"
 dmenuCommandOpts  = "-p '>' -l 10 -nf '" ++ colNormal  ++ "' -nb '" ++ colBG ++ "' -fn '"++ dzenFont  ++"' -sb '"++ colFocus ++"' -sf '"++ colNormal  ++"'"
 dmenuCommandProg  = "dmenu_run " ++ dmenuCommandOpts
-dmenuCommandServ  = "dmenu " ++ dmenuCommandOpts
+dmenuCommandBasic = "dmenu " ++ dmenuCommandOpts
 dmenuProg         = "prog=`" ++ dmenuCommandProg  ++ "` && eval \"exec ${prog}\""
-dmenuServ         = "param=`"++ shellScriptServer  ++" -l | " ++ dmenuCommandServ  ++ " -b` && eval \""++ shellScriptServer  ++" -e ${param}\""
+dmenuServ         = "param=`"++ shellScriptServer  ++" -l | " ++ dmenuCommandBasic  ++ " -b` && eval \""++ shellScriptServer  ++" -e ${param}\""
+--dmenuBrightness   = "param=`/usr/bin/seq 0 5 100 | " ++ dmenuCommandBasic  ++ " -b` && eval \""++ shellScriptBrightness ++" ${param}"
+dmenuBrightness   = "param=`/usr/bin/seq 0 5 100 | " ++ dmenuCommandBasic  ++ " -b` && eval " ++ shellScriptBrightness ++" ${param}"
 lxappearance      = "lxappearance"
+wicdclient        = "wicd-client"
 
 
 ------------------------------------------------------------------------
@@ -74,16 +77,18 @@ lxappearance      = "lxappearance"
 
 newKeyBindings x = M.union (M.fromList . keyBindings $ x) (keys defaultConfig x)
 keyBindings conf@(XConfig {XMonad.modMask = modMask}) =
-  addKeyBinding modMask xK_g addWS $
-  addKeyBinding modMask xK_v removeWorkspace $
-  --addKeyBinding modMask xK_b (selectWorkspace greenXPConfig)  $
+  --addKeyBinding modMask xK_g addWS $
+  --addKeyBinding modMask xK_v removeWorkspace $
+  addKeyBinding modMask xK_b (spawn dmenuBrightness) $
   addKeyBinding cModShift xK_p (sendMessage (IncMasterN 1))   $
   addKeyBinding cModShift xK_o (sendMessage (IncMasterN (-1))) $
   -- launch a terminal
   addKeyBinding modMask xK_Return (spawn $ XMonad.terminal conf) $
+  addKeyBinding cModCtrl xK_space (setLayout $ XMonad.layoutHook conf) $
   -- launch dmenu
   addKeyBinding modMask xK_p (spawn dmenuProg) $
   addKeyBinding cModCtrl xK_p (spawn lxappearance) $
+  addKeyBinding cModCtrl xK_r (spawn wicdclient) $
   -- launch dmenu for servers
   addKeyBinding modMask xK_s (spawn dmenuServ) $
   -- Resize viewed windows to the correct size
@@ -134,7 +139,7 @@ keyBindings conf@(XConfig {XMonad.modMask = modMask}) =
     cCtrlShift    = shiftMask .|. controlMask
     cCtrlAlt      = altKey    .|. controlMask
     cModCtrlShift = cModCtrl  .|. shiftMask
-    numAzerty       = [0x26,0xe9,0x22,0x27,0x28,0x2d,0xe8,0x5f,0xe7,0xe0] ++ [xK_F1..xK_F12]
+    numAzerty     = [0x26,0xe9,0x22,0x27,0x28,0x2d,0xe8,0x5f,0xe7,0xe0] ++ [xK_F1..xK_F12]
 
  
 ------------------------------------------------------------------------
@@ -155,34 +160,37 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 --
 full = noBorders Full
 winDecoTabbed = tabbed shrinkText defaultTheme
-layouts = avoidStruts(Grid ||| tiled ||| Mirror tiled ||| full)
+stdLayouts = avoidStruts(Grid ||| tiled ||| Mirror tiled ||| full)
   where
     -- default tiling algorithm partitions the screen into two panes
-    tiled   = Tall nmaster delta ratio
+    tiled    = Tall nmaster delta ratio
     -- The default number of windows in the master pane
-    nmaster = 1
+    nmaster  = 1
     -- Default proportion of screen occupied by master pane
-    ratio   = 1/10
+    ratio    = 1/10
     -- Percent of screen to increment by when resizing panes
-    delta   = 10/100
-myLayout = (toggleLayouts $ avoidStruts winDecoTabbed) $ layouts
+    delta    = 10/100
+myLayout = (toggleLayouts $ avoidStruts winDecoTabbed) $ onWorkspace "14" imLayout stdLayouts
+  where
+    imLayout   = named "skype" $ avoidStruts $ withIM (1%8) skype stdLayouts
+    skype      = ClassName "Skype" `And` Title "nicolas.maupu - Skype™"
+myTestLayout = avoidStruts(full)
 
 
 ------------------------------------------------------------------------
 -- Window rules:
 --
 myManageHook = composeAll
-    [ className =? "MPlayer"          --> doFloat
-    , title =? "GNU Image Manipulation Program" --> doFloat
-    , title =? "GIMP"                 --> doFloat
-    , className =? "Do"               --> doIgnore
-    , className =? "Tilda"            --> doFloat
-    , title     =? "VLC media player" --> doFloat
-    --, className =? "Firefox"        --> doF (W.shift $ myWorkspaces!!0 )
-    --, className =? "Firefox"        --> doF (W.shift $ myWorkspaces!!0 )
-    , className =? "Skype"            --> doF (W.shift $ myWorkspaces!!13 )
-    ]
-        <+> manageDocks
+    [ title =? "GNU Image Manipulation Program" --> doFloat
+    , title =? "GIMP"                  --> doFloat
+    , className =? "Skype"             --> doShift "14"
+    , className =? "Firefox"           --> doShift "1"
+    , className =? "Keepassx"          --> doShift "5"
+    , className =? "jetbrains-pycharm" --> doShift "6"
+    , className =? "jetbrains-idea"    --> doShift "6"
+    --, className =? "Cssh"              --> doFloat
+    --, className =? "URxvt"             --> doFloat
+    ] <+> manageDocks
  
 ------------------------------------------------------------------------
 -- Status bars and logging
@@ -193,8 +201,8 @@ myLogHook :: X()
 myLogHook = takeTopFocus >> setWMName "LG3D" >> dynamicLogXinerama >> updatePointer (Relative 0.5 0.5)
 
 myStartupHook = setWMName "LG3D"
-myStatusBar   = "dzen2 -m -x 0 -y 0 -h 20 -w 1450 -ta l -fg '" ++ colNormal ++ "' -bg '" ++ colBG ++ "' -fn '" ++ dzenFont  ++ "'"
-myDzenRight   = "/home/nmaupu/.xmonad/scripts/loop.sh | dzen2 -fn '" ++ dzenFont  ++ "' -x 1450 -y 0 -h 20 -w 466 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
+myStatusBar   = "dzen2 -m -x 0 -y 0 -h 20 -w 1454 -ta l -fg '" ++ colNormal ++ "' -bg '" ++ colBG ++ "' -fn '" ++ dzenFont  ++ "'"
+myDzenRight   = "/home/nmaupu/.xmonad/scripts/loop.sh | dzen2 -fn '" ++ dzenFont  ++ "' -x 1454 -y 0 -h 20 -w 366 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
 
 -- dynamicLog pretty printer for dzen:
 myDzenPP h = defaultPP

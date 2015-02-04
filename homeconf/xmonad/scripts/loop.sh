@@ -1,6 +1,6 @@
 #!/bin/bash
 
-INTERVAL=1
+INTERVAL=2
 DIRNAME=$(dirname $0)
 
 while [ true ]

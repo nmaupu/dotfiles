@@ -12,8 +12,8 @@ Rxvt*intensityStyles: True
 Rxvt.perl-ext-common: default,matcher
 Rxvt*urlLauncher: firefox
 Rxvt*cursorBlink: false
-Rxvt*background: #222222
-Rxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=15
+Rxvt*background: [95]#222222
+Rxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=13
 Rxvt*jumpScroll: true
 Rxvt*scrollstyle: plain
 Rxvt*scrollTtyOutput: true

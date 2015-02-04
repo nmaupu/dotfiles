@@ -1,6 +1,9 @@
-./.screenlayout/dualscreen.sh &
-xrdb -merge ~/.Xresources &
-xscreensaver -no-splash &
+~/.screenlayout/double-screen.sh
+xrdb -merge ~/.Xresources
 ssh-agent &
+xscreensaver -no-splash &
+autocutsel -f &
+trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand false --width 100 --widthtype pixel --transparent true --tint 0x000000 --alpha 0 --height 20 &
+wicd-client -t &
 skype &
 exec xmonad

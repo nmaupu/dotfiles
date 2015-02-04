@@ -1,4 +1,4 @@
-export PATH=/opt/firefox:/opt/ant/bin:/opt/bin:/sbin:/opt/scripts:~/scripts:${PATH}
+export PATH=~/programs/activator:/opt/firefox:/opt/ant/bin:/opt/bin:/sbin:/opt/scripts:~/scripts:${PATH}
 
 ##  Variables d'environnements
 # JDK and tools

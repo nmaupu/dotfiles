@@ -19,6 +19,7 @@ import XMonad.Layout.NoBorders
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Tabbed
 import XMonad.Layout.ToggleLayouts
+import XMonad.Layout.ResizableTile
 import XMonad.Prompt
 import XMonad.Util.Run
 import XMonad.Util.WorkspaceCompare (getSortByTag)
@@ -47,7 +48,8 @@ numLockKey      = mod2Mask
 myTerminal      = "urxvt"
 myBorderWidth   = 2
 myWorkspaces    = take 15 $ map show [1..]
-dzenFont        = "-xos4-terminus-bold-r-normal-*-14-*-*-*-*-*-iso8859-15"
+dzenFontBold    = "-xos4-terminus-bold-r-normal-*-14-*-*-*-*-*-iso8859-15"
+dzenFontNormal  = "-xos4-terminus-*-r-normal-*-14-*-*-*-*-*-iso8859-15"
 iconDir         = ".xmonad/icons"
 iconSep         = iconDir ++ "/separator.xbm"
 colBG           = "#0f0f0f"
@@ -60,12 +62,11 @@ colBorderFocus  = "#AA0033"
 
 shellScriptServer = "~/scripts/xmonad-server-connect.sh"
 shellScriptBrightness = "~/scripts/brightness.sh"
-dmenuCommandOpts  = "-p '>' -l 10 -nf '" ++ colNormal  ++ "' -nb '" ++ colBG ++ "' -fn '"++ dzenFont  ++"' -sb '"++ colFocus ++"' -sf '"++ colNormal  ++"'"
+dmenuCommandOpts  = "-p '>' -l 10 -nf '" ++ colNormal  ++ "' -nb '" ++ colBG ++ "' -fn '"++ dzenFontBold ++"' -sb '"++ colFocus ++"' -sf '"++ colNormal  ++"'"
 dmenuCommandProg  = "dmenu_run " ++ dmenuCommandOpts
 dmenuCommandBasic = "dmenu " ++ dmenuCommandOpts
 dmenuProg         = "prog=`" ++ dmenuCommandProg  ++ "` && eval \"exec ${prog}\""
 dmenuServ         = "param=`"++ shellScriptServer  ++" -l | " ++ dmenuCommandBasic  ++ " -b` && eval \""++ shellScriptServer  ++" -e ${param}\""
---dmenuBrightness   = "param=`/usr/bin/seq 0 5 100 | " ++ dmenuCommandBasic  ++ " -b` && eval \""++ shellScriptBrightness ++" ${param}"
 dmenuBrightness   = "param=`/usr/bin/seq 0 5 100 | " ++ dmenuCommandBasic  ++ " -b` && eval " ++ shellScriptBrightness ++" ${param}"
 lxappearance      = "lxappearance"
 wicdclient        = "wicd-client"
@@ -124,6 +125,8 @@ keyBindings conf@(XConfig {XMonad.modMask = modMask}) =
   addKeyBinding cModCtrl      xK_Down  toggleWS    $
   addKeyBinding cModCtrlShift xK_Left  (shiftToPrev >> prevWS) $
   addKeyBinding cModCtrlShift xK_Right (shiftToNext >> nextWS) $
+  addKeyBinding modMask xK_a (sendMessage MirrorShrink) $
+  addKeyBinding modMask xK_t (sendMessage MirrorExpand) $
   -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
   ([((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
       | (key, sc) <- zip [xK_z, xK_e, xK_r] [0..]
@@ -163,18 +166,20 @@ winDecoTabbed = tabbed shrinkText defaultTheme
 stdLayouts = avoidStruts(Grid ||| tiled ||| Mirror tiled ||| full)
   where
     -- default tiling algorithm partitions the screen into two panes
-    tiled    = Tall nmaster delta ratio
+    --tiled    = Tall nmaster delta ratio
+    tiled    = ResizableTall 1 delta (1/2) []
     -- The default number of windows in the master pane
     nmaster  = 1
     -- Default proportion of screen occupied by master pane
     ratio    = 1/10
     -- Percent of screen to increment by when resizing panes
     delta    = 10/100
-myLayout = (toggleLayouts $ avoidStruts winDecoTabbed) $ onWorkspace "14" imLayout stdLayouts
+imLayout = named "skype" $ avoidStruts $ withIM (1%8) skype stdLayouts
   where
-    imLayout   = named "skype" $ avoidStruts $ withIM (1%8) skype stdLayouts
-    skype      = ClassName "Skype" `And` Title "nicolas.maupu - Skype™"
-myTestLayout = avoidStruts(full)
+    skype = ClassName "Skype" `And` Title "nicolas.maupu - Skype™"
+
+myLayout = (toggleLayouts $ avoidStruts winDecoTabbed) $
+           onWorkspace "14" imLayout stdLayouts
 
 
 ------------------------------------------------------------------------
@@ -184,6 +189,7 @@ myManageHook = composeAll
     [ title =? "GNU Image Manipulation Program" --> doFloat
     , title =? "GIMP"                  --> doFloat
     , className =? "Skype"             --> doShift "14"
+    , className =? "ScudCloud"         --> doShift "14"
     , className =? "Firefox"           --> doShift "1"
     , className =? "Keepassx"          --> doShift "5"
     , className =? "jetbrains-pycharm" --> doShift "6"
@@ -198,11 +204,13 @@ myManageHook = composeAll
 -- https://gist.github.com/markhibberd/636125/raw/11713d338e98a9dd5d126308218067a1628480df/xmonad-focus-wire.hs
 -- http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Hooks-ICCCMFocus.html
 myLogHook :: X()
-myLogHook = takeTopFocus >> setWMName "LG3D" >> dynamicLogXinerama >> updatePointer (Relative 0.5 0.5)
+-- myLogHook = takeTopFocus >> setWMName "LG3D" >> dynamicLogXinerama >> updatePointer (Relative 0.5 0.5)
+myLogHook = takeTopFocus >> setWMName "LG3D" >> dynamicLogXinerama
 
 myStartupHook = setWMName "LG3D"
-myStatusBar   = "dzen2 -m -x 0 -y 0 -h 20 -w 1454 -ta l -fg '" ++ colNormal ++ "' -bg '" ++ colBG ++ "' -fn '" ++ dzenFont  ++ "'"
-myDzenRight   = "/home/nmaupu/.xmonad/scripts/loop.sh | dzen2 -fn '" ++ dzenFont  ++ "' -x 1454 -y 0 -h 20 -w 366 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
+myStatusBar   = "dzen2 -xs 1 -m -x 0 -y 0 -h 20 -w 1250 -ta l -fg '" ++ colNormal ++ "' -bg '" ++ colBG ++ "' -fn '" ++ dzenFontBold ++ "'"
+--myDzenRight   = "/home/nmaupu/.xmonad/scripts/loop.sh | dzen2 -xs 1 -ta r -fn '" ++ dzenFontNormal ++ "' -x 1250 -y 0 -h 20 -w 500 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
+myDzenRight   = "conky -c /home/nmaupu/.xmonad/scripts/conky_dzen | dzen2 -xs 1 -ta r -fn '" ++ dzenFontNormal ++ "' -x 1250 -y 0 -h 20 -w 570 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
 
 -- dynamicLog pretty printer for dzen:
 myDzenPP h = defaultPP

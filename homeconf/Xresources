@@ -1,3 +1,8 @@
+Xft.dpi:                    96
+Xft.antialias:              true
+Xft.rgba:                   rgb
+Xft.hinting:                true
+Xft.hintstyle:              hintslight
 Rxvt*geometry:114x60
 Rxvt*foreground: white
 Rxvt*cursorColor: Orchid
@@ -13,7 +18,11 @@ Rxvt.perl-ext-common: default,matcher
 Rxvt*urlLauncher: firefox
 Rxvt*cursorBlink: false
 Rxvt*background: [95]#222222
-Rxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=13
+! Rxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=13
+! Rxvt*font: xft:Inconsolata:pixelsize=15,style=Regular
+! Rxvt*font: xft:Anonymous Pro:pixelsize=14,style=Regular
+Rxvt*font: xft:DejaVu Sans Mono:pixelsize=12,style=Regular
+Rxvt*letterSpace: -1
 Rxvt*jumpScroll: true
 Rxvt*scrollstyle: plain
 Rxvt*scrollTtyOutput: true

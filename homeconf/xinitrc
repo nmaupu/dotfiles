@@ -5,5 +5,5 @@ xscreensaver -no-splash &
 autocutsel -f &
 trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand false --width 100 --widthtype pixel --transparent true --tint 0x000000 --alpha 0 --height 20 &
 wicd-client -t &
-skype &
+solaar &
 exec xmonad

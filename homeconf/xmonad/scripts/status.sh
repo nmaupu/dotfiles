@@ -16,6 +16,11 @@ function dateformat
   date "+%A %d.%m.%Y %H:%M:%S"
 }
 
+function dateutc
+{
+  date -u "+%H:%M:%S UTC"
+}
+
 function cputemp
 {
   TEMP=$1
@@ -51,7 +56,7 @@ function print_status
   
   if [ $DATE_CPT -ge $DATE_INTERVAL ]
   then
-    PDATE=$(dateformat)
+    PDATE="$(dateformat) - $(dateutc)"
     DATE_CPT=0
   fi
 

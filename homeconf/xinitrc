@@ -1,9 +1,11 @@
 ~/.screenlayout/double-screen.sh
 xrdb -merge ~/.Xresources
+autocutsel -f
+#autocutsel -s PRIMARY -f
 ssh-agent &
 xscreensaver -no-splash &
-autocutsel -f &
 trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand false --width 100 --widthtype pixel --transparent true --tint 0x000000 --alpha 0 --height 20 &
 wicd-client -t &
 solaar &
+owncloud &
 exec xmonad

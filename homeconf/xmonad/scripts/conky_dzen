@@ -6,7 +6,7 @@ update_interval_on_battery 2
 use_spacer left
  
 TEXT
-^fg(\#9dc3f9)^i(/home/nmaupu/.xmonad/dzen2/net_wired.xbm)^fg(\#00aa4a) ^i(/home/nmaupu/.xmonad/dzen2/net_down_03.xbm)${downspeed eth0}^fg(\#ff3333) ^i(/home/nmaupu/.xmonad/dzen2/net_up_03.xbm)${upspeed eth0} \
+^fg(\#9dc3f9)^i(/home/nmaupu/.xmonad/dzen2/net_wired.xbm)^fg(\#00aa4a) ^i(/home/nmaupu/.xmonad/dzen2/net_down_03.xbm)${downspeed eth0}^fg(\#ff6633) ^i(/home/nmaupu/.xmonad/dzen2/net_up_03.xbm)${upspeed eth0} \
 ^fg(\#9dc3f9)^i(/home/nmaupu/.xmonad/dzen2/bat_full_02.xbm) \
 ${if_match ${exec acpi -a | grep 'on-line' | wc -l} > 0}\
 ^fg(\#00aa4a)\

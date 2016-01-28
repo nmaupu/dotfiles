@@ -125,8 +125,8 @@ keyBindings conf@(XConfig {XMonad.modMask = modMask}) =
   addKeyBinding cModCtrl      xK_Down  toggleWS    $
   addKeyBinding cModCtrlShift xK_Left  (shiftToPrev >> prevWS) $
   addKeyBinding cModCtrlShift xK_Right (shiftToNext >> nextWS) $
-  addKeyBinding modMask xK_a (sendMessage MirrorShrink) $
-  addKeyBinding modMask xK_t (sendMessage MirrorExpand) $
+  addKeyBinding cModCtrl xK_a (sendMessage MirrorShrink) $
+  addKeyBinding cModCtrl xK_z (sendMessage MirrorExpand) $
   -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
   ([((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
       | (key, sc) <- zip [xK_z, xK_e, xK_r] [0..]
@@ -167,7 +167,7 @@ stdLayouts = avoidStruts(Grid ||| tiled ||| Mirror tiled ||| full)
   where
     -- default tiling algorithm partitions the screen into two panes
     --tiled    = Tall nmaster delta ratio
-    tiled    = ResizableTall 1 delta (1/2) []
+    tiled    = ResizableTall 1 delta (1/10) []
     -- The default number of windows in the master pane
     nmaster  = 1
     -- Default proportion of screen occupied by master pane

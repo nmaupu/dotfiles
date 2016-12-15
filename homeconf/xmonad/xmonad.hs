@@ -194,8 +194,6 @@ myManageHook = composeAll
     , className =? "Keepassx"          --> doShift "5"
     , className =? "jetbrains-pycharm" --> doShift "6"
     , className =? "jetbrains-idea"    --> doShift "6"
-    --, className =? "Cssh"              --> doFloat
-    --, className =? "URxvt"             --> doFloat
     ] <+> manageDocks
  
 ------------------------------------------------------------------------
@@ -208,9 +206,8 @@ myLogHook :: X()
 myLogHook = takeTopFocus >> setWMName "LG3D" >> dynamicLogXinerama
 
 myStartupHook = setWMName "LG3D"
-myStatusBar   = "dzen2 -xs 1 -m -x 0 -y 0 -h 20 -w 1250 -ta l -fg '" ++ colNormal ++ "' -bg '" ++ colBG ++ "' -fn '" ++ dzenFontBold ++ "'"
---myDzenRight   = "/home/nmaupu/.xmonad/scripts/loop.sh | dzen2 -xs 1 -ta r -fn '" ++ dzenFontNormal ++ "' -x 1250 -y 0 -h 20 -w 500 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
-myDzenRight   = "conky -c /home/nmaupu/.xmonad/scripts/conky_dzen | dzen2 -xs 1 -ta r -fn '" ++ dzenFontNormal ++ "' -x 1250 -y 0 -h 20 -w 570 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
+myStatusBar   = "dzen2 -xs 1 -m -x 0 -y 0 -h 20 -w 1150 -ta l -fg '" ++ colNormal ++ "' -bg '" ++ colBG ++ "' -fn '" ++ dzenFontBold ++ "'"
+myDzenRight   = "conky -c /home/nmaupu/.xmonad/scripts/conky_dzen | dzen2 -xs 1 -ta r -fn '" ++ dzenFontNormal ++ "' -x 1150 -y 0 -h 20 -w 700 -ta r -bg '" ++ colBG  ++ "' -fg '" ++ colNormal  ++ "' -p -e ''"
 
 -- dynamicLog pretty printer for dzen:
 myDzenPP h = defaultPP
@@ -244,6 +241,6 @@ main = do
       mouseBindings      = myMouseBindings,
       layoutHook         = myLayout,
       manageHook         = myManageHook,
-      logHook            = dynamicLogWithPP $ myDzenPP dzen,
+      logHook            = (dynamicLogWithPP $ myDzenPP dzen) >> takeTopFocus,
       startupHook        = myStartupHook
     }
